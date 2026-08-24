@@ -115,6 +115,20 @@
           "target": "@/components/remotion/matrix-decode.tsx"
         }
       ]
+    },
+    {
+      "name": "spotlight-card",
+      "type": "registry:ui",
+      "title": "Spotlight Card",
+      "description": "A card surface with a deterministic frame-driven synthetic spotlight and border glow.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/spotlight-card.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/spotlight-card.tsx"
+        }
+      ]
     }
   ]
 }
