@@ -84,6 +84,23 @@
           "target": "@/components/remotion/enter-exit.tsx"
         }
       ]
+    },
+    {
+      "name": "blur-reveal",
+      "type": "registry:ui",
+      "title": "Blur Reveal",
+      "description": "A reusable text reveal composed from the Fade and Blur primitives.",
+      "registryDependencies": [
+        "moritzbrantner/remotion-primitives/fade",
+        "moritzbrantner/remotion-primitives/blur"
+      ],
+      "files": [
+        {
+          "path": "primitives/blur-reveal.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/blur-reveal.tsx"
+        }
+      ]
     }
   ]
 }
