@@ -56,6 +56,34 @@
           "target": "@/components/remotion/blur.tsx"
         }
       ]
+    },
+    {
+      "name": "stagger",
+      "type": "registry:ui",
+      "title": "Stagger",
+      "description": "Offsets child sequences by a fixed number of frames so nested Remotion primitives receive local frame time.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/stagger.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/stagger.tsx"
+        }
+      ]
+    },
+    {
+      "name": "enter-exit",
+      "type": "registry:ui",
+      "title": "Enter Exit",
+      "description": "A full-lifecycle opacity and translation wrapper for deterministic scene entrances and exits.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/enter-exit.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/enter-exit.tsx"
+        }
+      ]
     }
   ]
 }
