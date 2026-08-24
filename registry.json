@@ -1,0 +1,6 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "moritzbrantner-remotion-primitives",
+  "homepage": "https://github.com/moritzbrantner/remotion-primitives",
+  "include": ["registry/default/registry.json"]
+}

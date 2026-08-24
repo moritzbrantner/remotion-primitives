@@ -1,0 +1,61 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "fade",
+      "type": "registry:ui",
+      "title": "Fade",
+      "description": "A frame-synced opacity primitive for deterministic Remotion entrances, exits, and crossfades.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/fade.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/fade.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slide",
+      "type": "registry:ui",
+      "title": "Slide",
+      "description": "A frame-synced directional translation primitive for Remotion entrances and motion composition.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/slide.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/slide.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scale",
+      "type": "registry:ui",
+      "title": "Scale",
+      "description": "A frame-synced scale primitive with configurable start, duration, and endpoints.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/scale.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/scale.tsx"
+        }
+      ]
+    },
+    {
+      "name": "blur",
+      "type": "registry:ui",
+      "title": "Blur",
+      "description": "A frame-synced blur primitive that composes with existing CSS filters.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/blur.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/blur.tsx"
+        }
+      ]
+    }
+  ]
+}
