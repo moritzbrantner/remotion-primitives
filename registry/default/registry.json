@@ -143,6 +143,20 @@
           "target": "@/components/remotion/terminal-simulator.tsx"
         }
       ]
+    },
+    {
+      "name": "subtitles",
+      "type": "registry:ui",
+      "title": "Subtitles",
+      "description": "Frame-synced subtitles built on Remotion Caption data, with page grouping, silence-aware hiding, and optional word highlighting.",
+      "dependencies": ["remotion", "@remotion/captions"],
+      "files": [
+        {
+          "path": "primitives/subtitles.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/subtitles.tsx"
+        }
+      ]
     }
   ]
 }
