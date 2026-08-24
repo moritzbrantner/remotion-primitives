@@ -145,16 +145,45 @@
       ]
     },
     {
+      "name": "subtitle-formats",
+      "type": "registry:lib",
+      "title": "Subtitle Formats",
+      "description": "Format detection and normalization for SRT, WebVTT, ASS/SSA, LRC, SBV, and JSON subtitles, including rich ASS style and karaoke metadata.",
+      "files": [
+        {
+          "path": "lib/subtitle-formats.ts",
+          "type": "registry:lib",
+          "target": "@/lib/remotion/subtitle-formats.ts"
+        }
+      ]
+    },
+    {
       "name": "subtitles",
       "type": "registry:ui",
       "title": "Subtitles",
-      "description": "Frame-synced subtitles built on Remotion Caption data, with page grouping, silence-aware hiding, and optional word highlighting.",
+      "description": "A rich frame-synced subtitle renderer for Remotion Caption data or normalized SRT, VTT, ASS/SSA, LRC, SBV, and JSON tracks.",
       "dependencies": ["remotion", "@remotion/captions"],
+      "registryDependencies": ["moritzbrantner/remotion-primitives/subtitle-formats"],
       "files": [
         {
           "path": "primitives/subtitles.tsx",
           "type": "registry:ui",
           "target": "@/components/remotion/subtitles.tsx"
+        }
+      ]
+    },
+    {
+      "name": "subtitle-file",
+      "type": "registry:ui",
+      "title": "Subtitle File",
+      "description": "A render-safe file loader that fetches subtitle files, auto-detects their format, delays Remotion rendering until loaded, and renders them through Subtitles.",
+      "dependencies": ["remotion"],
+      "registryDependencies": ["moritzbrantner/remotion-primitives/subtitles"],
+      "files": [
+        {
+          "path": "primitives/subtitle-file.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/subtitle-file.tsx"
         }
       ]
     }
