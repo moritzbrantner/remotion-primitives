@@ -101,6 +101,20 @@
           "target": "@/components/remotion/blur-reveal.tsx"
         }
       ]
+    },
+    {
+      "name": "matrix-decode",
+      "type": "registry:ui",
+      "title": "Matrix Decode",
+      "description": "A deterministic character-scramble text reveal with configurable timing, symbols, and seed.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/matrix-decode.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/matrix-decode.tsx"
+        }
+      ]
     }
   ]
 }
