@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "fade",
+      "type": "registry:ui",
+      "title": "Fade",
+      "description": "A frame-synced opacity primitive for deterministic Remotion entrances, exits, and crossfades.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/fade.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/fade.tsx"
+        }
+      ]
+    }
+  ]
+}
