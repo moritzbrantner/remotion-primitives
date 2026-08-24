@@ -10,10 +10,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "paths": {
-      "@/components/remotion/*": ["registry/default/primitives/*"],
-      "@/lib/remotion/*": ["registry/default/lib/*"]
+      "@/components/remotion/*": ["./registry/default/primitives/*"],
+      "@/lib/remotion/*": ["./registry/default/lib/*"]
     }
   },
   "include": ["registry/**/*.ts", "registry/**/*.tsx"]
