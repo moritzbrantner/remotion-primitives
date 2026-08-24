@@ -73,6 +73,7 @@ export function SpotlightCard({
     <div
       className={className}
       style={{
+        ...style,
         position: 'relative',
         width: cardWidth,
         height: cardHeight,
@@ -80,7 +81,6 @@ export function SpotlightCard({
         padding: 1,
         background: borderGlow,
         opacity,
-        ...style,
       }}
     >
       <div
