@@ -129,6 +129,20 @@
           "target": "@/components/remotion/spotlight-card.tsx"
         }
       ]
+    },
+    {
+      "name": "terminal-simulator",
+      "type": "registry:ui",
+      "title": "Terminal Simulator",
+      "description": "A frame-driven terminal window with chunked typing, line delays, pauses, cursor blinking, and snap scrolling.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/terminal-simulator.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/terminal-simulator.tsx"
+        }
+      ]
     }
   ]
 }
