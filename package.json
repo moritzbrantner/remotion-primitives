@@ -3,23 +3,25 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.4.0",
   "scripts": {
     "build:registry": "bunx shadcn@4.18.0 build",
     "check-types": "tsc --noEmit",
-    "test:unit": "vitest run registry/default/lib/subtitle-formats.test.ts",
+    "test:unit": "vitest run",
+    "verify:source-contracts": "bun scripts/verify-source-contracts.ts",
     "verify:registry": "bunx shadcn@4.18.0 registry validate ./registry.json && bun run build:registry --output .cache/registry-check",
-    "verify": "bun run check-types && bun run test:unit && bun run verify:registry"
+    "verify": "bun run check-types && bun run test:unit && bun run verify:source-contracts && bun run verify:registry"
   },
   "peerDependencies": {
     "react": "^19.0.0",
     "remotion": "^4.0.0"
   },
   "devDependencies": {
-    "@remotion/captions": "^4.0.470",
-    "@types/react": "^19.2.15",
-    "react": "^19.2.6",
-    "remotion": "^4.0.470",
+    "@remotion/captions": "4.0.520",
+    "@types/bun": "1.4.0",
+    "@types/react": "19.2.18",
+    "react": "19.2.8",
+    "remotion": "4.0.520",
     "typescript": "^6.0.2",
     "vitest": "^4.1.8"
   }
