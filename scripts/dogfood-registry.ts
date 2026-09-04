@@ -163,7 +163,7 @@ try {
   await run(['bun', 'install'], consumer);
 
   await run(
-    ['bunx', 'shadcn@4.18.0', 'add', '--yes', '--overwrite', ...requestedItems.map(address)],
+    ['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', ...requestedItems.map(address)],
     consumer,
   );
 
@@ -172,7 +172,7 @@ try {
   // GitHub registry refs are not inherited by registryDependencies. Reinstall dependency items
   // at the exact tested ref so final source fingerprinting and compilation cover one commit.
   await run(
-    ['bunx', 'shadcn@4.18.0', 'add', '--yes', '--overwrite', ...dependencyItems.map(address)],
+    ['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', ...dependencyItems.map(address)],
     consumer,
   );
 

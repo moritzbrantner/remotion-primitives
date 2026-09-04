@@ -5,14 +5,14 @@
   "type": "module",
   "packageManager": "bun@1.4.0",
   "scripts": {
-    "build:registry": "bunx shadcn@4.18.0 build",
+    "build:registry": "bunx shadcn@4.20.1 build",
     "build:showcase": "vite build --config showcase/vite.config.ts",
     "check-types": "tsc --noEmit",
     "dev:showcase": "vite --config showcase/vite.config.ts",
     "dogfood:registry": "bun scripts/dogfood-registry.ts",
     "test:unit": "vitest run",
     "verify:source-contracts": "bun scripts/verify-source-contracts.ts",
-    "verify:registry": "bunx shadcn@4.18.0 registry validate ./registry.json && bun run build:registry --output .cache/registry-check",
+    "verify:registry": "bunx shadcn@4.20.1 registry validate ./registry.json && bun run build:registry --output .cache/registry-check",
     "verify": "bun run check-types && bun run test:unit && bun run verify:source-contracts && bun run verify:registry && bun run build:showcase"
   },
   "peerDependencies": {
