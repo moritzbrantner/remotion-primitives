@@ -1,3 +1,4 @@
+import { spawn, spawnSync } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -23,24 +24,27 @@ const expectedCopies = new Map([
 
 function currentRef() {
   if (process.env.REGISTRY_REF) return process.env.REGISTRY_REF;
-  const result = Bun.spawnSync(['git', 'rev-parse', 'HEAD'], { cwd: root });
-  if (result.exitCode !== 0) {
-    throw new Error(`Unable to resolve current git commit: ${new TextDecoder().decode(result.stderr)}`);
+  const result = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
+  if (result.status !== 0) {
+    throw new Error(`Unable to resolve current git commit: ${result.stderr}`);
   }
-  return new TextDecoder().decode(result.stdout).trim();
+  return result.stdout.trim();
 }
 
 async function run(command: string[], cwd: string) {
   console.log(`$ ${command.join(' ')}`);
-  const child = Bun.spawn(command, {
-    cwd,
-    env: process.env,
-    stdin: 'inherit',
-    stdout: 'inherit',
-    stderr: 'inherit',
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn(command[0], command.slice(1), {
+      cwd,
+      env: process.env,
+      stdio: 'inherit',
+    });
+    child.once('error', reject);
+    child.once('exit', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`${command.join(' ')} exited with ${code ?? 'no exit code'}`));
+    });
   });
-  const exitCode = await child.exited;
-  if (exitCode !== 0) throw new Error(`${command.join(' ')} exited with ${exitCode}`);
 }
 
 async function listFiles(directory: string, relative = ''): Promise<string[]> {
