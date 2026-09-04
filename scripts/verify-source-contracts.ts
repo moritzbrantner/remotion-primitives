@@ -57,7 +57,7 @@ const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as {
 
 for (const item of manifest.items) {
   for (const file of item.files ?? []) {
-    const expectedPrefix = file.type === 'registry:lib' ? '@/lib/remotion/' : '@/components/remotion/';
+    const expectedPrefix = file.type === 'registry:lib' ? '@lib/remotion/' : '@components/remotion/';
     if (!file.target?.startsWith(expectedPrefix)) {
       errors.push(`${item.name} must target ${expectedPrefix}`);
     }

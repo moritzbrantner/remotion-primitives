@@ -11,7 +11,7 @@
         {
           "path": "primitives/fade.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/fade.tsx"
+          "target": "@components/remotion/fade.tsx"
         }
       ]
     },
@@ -25,7 +25,7 @@
         {
           "path": "primitives/slide.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/slide.tsx"
+          "target": "@components/remotion/slide.tsx"
         }
       ]
     },
@@ -39,7 +39,7 @@
         {
           "path": "primitives/scale.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/scale.tsx"
+          "target": "@components/remotion/scale.tsx"
         }
       ]
     },
@@ -53,7 +53,7 @@
         {
           "path": "primitives/blur.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/blur.tsx"
+          "target": "@components/remotion/blur.tsx"
         }
       ]
     },
@@ -67,7 +67,7 @@
         {
           "path": "primitives/stagger.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/stagger.tsx"
+          "target": "@components/remotion/stagger.tsx"
         }
       ]
     },
@@ -81,7 +81,7 @@
         {
           "path": "primitives/enter-exit.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/enter-exit.tsx"
+          "target": "@components/remotion/enter-exit.tsx"
         }
       ]
     },
@@ -98,7 +98,7 @@
         {
           "path": "primitives/blur-reveal.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/blur-reveal.tsx"
+          "target": "@components/remotion/blur-reveal.tsx"
         }
       ]
     },
@@ -112,7 +112,7 @@
         {
           "path": "primitives/matrix-decode.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/matrix-decode.tsx"
+          "target": "@components/remotion/matrix-decode.tsx"
         }
       ]
     },
@@ -126,7 +126,7 @@
         {
           "path": "primitives/animated-number.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/animated-number.tsx"
+          "target": "@components/remotion/animated-number.tsx"
         }
       ]
     },
@@ -140,7 +140,7 @@
         {
           "path": "primitives/typewriter.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/typewriter.tsx"
+          "target": "@components/remotion/typewriter.tsx"
         }
       ]
     },
@@ -154,7 +154,7 @@
         {
           "path": "primitives/spotlight-card.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/spotlight-card.tsx"
+          "target": "@components/remotion/spotlight-card.tsx"
         }
       ]
     },
@@ -168,7 +168,7 @@
         {
           "path": "primitives/terminal-simulator.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/terminal-simulator.tsx"
+          "target": "@components/remotion/terminal-simulator.tsx"
         }
       ]
     },
@@ -181,7 +181,7 @@
         {
           "path": "lib/subtitle-formats.ts",
           "type": "registry:lib",
-          "target": "@/lib/remotion/subtitle-formats.ts"
+          "target": "@lib/remotion/subtitle-formats.ts"
         }
       ]
     },
@@ -196,7 +196,7 @@
         {
           "path": "primitives/subtitles.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/subtitles.tsx"
+          "target": "@components/remotion/subtitles.tsx"
         }
       ]
     },
@@ -211,7 +211,7 @@
         {
           "path": "primitives/subtitle-file.tsx",
           "type": "registry:ui",
-          "target": "@/components/remotion/subtitle-file.tsx"
+          "target": "@components/remotion/subtitle-file.tsx"
         }
       ]
     }
