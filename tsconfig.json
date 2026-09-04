@@ -15,5 +15,11 @@
       "@/lib/remotion/*": ["./registry/default/lib/*"]
     }
   },
-  "include": ["registry/**/*.ts", "registry/**/*.tsx"]
+  "include": [
+    "registry/**/*.ts",
+    "registry/**/*.tsx",
+    "scripts/**/*.ts",
+    "showcase/**/*.ts",
+    "showcase/**/*.tsx"
+  ]
 }

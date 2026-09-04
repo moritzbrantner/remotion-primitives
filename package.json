@@ -6,11 +6,13 @@
   "packageManager": "bun@1.4.0",
   "scripts": {
     "build:registry": "bunx shadcn@4.18.0 build",
+    "build:showcase": "vite build --config showcase/vite.config.ts",
     "check-types": "tsc --noEmit",
+    "dev:showcase": "vite --config showcase/vite.config.ts",
     "test:unit": "vitest run",
     "verify:source-contracts": "bun scripts/verify-source-contracts.ts",
     "verify:registry": "bunx shadcn@4.18.0 registry validate ./registry.json && bun run build:registry --output .cache/registry-check",
-    "verify": "bun run check-types && bun run test:unit && bun run verify:source-contracts && bun run verify:registry"
+    "verify": "bun run check-types && bun run test:unit && bun run verify:source-contracts && bun run verify:registry && bun run build:showcase"
   },
   "peerDependencies": {
     "react": "^19.0.0",
@@ -18,11 +20,16 @@
   },
   "devDependencies": {
     "@remotion/captions": "4.0.520",
+    "@remotion/player": "4.0.520",
     "@types/bun": "1.4.0",
     "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
     "react": "19.2.8",
+    "react-dom": "19.2.8",
     "remotion": "4.0.520",
     "typescript": "^6.0.2",
+    "vite": "8.2.2",
     "vitest": "^4.1.8"
   }
 }
