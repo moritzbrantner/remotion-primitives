@@ -24,7 +24,9 @@ The motion tests pin frame-boundary behavior for the core primitives, while `scr
 
 ## Showcase
 
-Run `bun run dev:showcase` for a small Remotion Player catalog. The same static build is produced by `bun run build:showcase` and deployed to GitHub Pages from `main`.
+Run `bun run dev:showcase` for a small Remotion Player catalog. The same static build is produced by `bun run build:showcase` and prepared for deployment to GitHub Pages from `main`.
+
+GitHub Pages requires one repository-level setup step that the workflow token cannot perform: in **Settings → Pages**, set **Source** to **GitHub Actions**. Until that is enabled, the Pages workflow still verifies and uploads the showcase build but reports a notice and skips deployment. After enabling Pages, run the workflow manually once or push to `main`.
 
 The showcase is intentionally a dogfood consumer, not a second component implementation.
 
