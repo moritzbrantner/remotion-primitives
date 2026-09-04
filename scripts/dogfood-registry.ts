@@ -147,7 +147,6 @@ try {
             strict: true,
             noEmit: true,
             skipLibCheck: true,
-            baseUrl: '.',
             paths: { '@/*': ['./src/*'] },
           },
           include: ['src/**/*.ts', 'src/**/*.tsx'],
