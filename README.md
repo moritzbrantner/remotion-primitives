@@ -22,6 +22,14 @@ The repository supports two usage modes:
 
 The motion tests pin frame-boundary behavior for the core primitives, while `scripts/verify-source-contracts.ts` rejects ambient random/time sources and protects the subtitle parser seam.
 
+## Registry dogfood
+
+`bun run dogfood:registry` creates a clean temporary React/TypeScript consumer and installs representative items through the private GitHub registry itself. It exercises a standalone item, composed registry dependencies, and the subtitle dependency chain rather than copying files directly from the checkout.
+
+The dogfood check verifies the expected consumer paths, reinstalls dependency items at the exact tested commit, fingerprints every installed source file against the repository source, checks that Remotion dependencies were added to the consumer package, and type-checks a composition that imports the copied components.
+
+CI supplies the workflow token and pins installs to the PR head SHA or push SHA. For local runs, authenticate with `gh auth login`; the script uses the current checkout commit when `REGISTRY_REF` is not set.
+
 ## Showcase
 
 Run `bun run dev:showcase` for a small Remotion Player catalog. The same static build is produced by `bun run build:showcase` and prepared for deployment to GitHub Pages from `main`.
