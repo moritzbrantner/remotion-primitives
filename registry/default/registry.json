@@ -117,6 +117,34 @@
       ]
     },
     {
+      "name": "animated-number",
+      "type": "registry:ui",
+      "title": "Animated Number",
+      "description": "A deterministic frame-interpolated number with explicit precision, prefix, and suffix formatting.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/animated-number.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/animated-number.tsx"
+        }
+      ]
+    },
+    {
+      "name": "typewriter",
+      "type": "registry:ui",
+      "title": "Typewriter",
+      "description": "A frame-driven text reveal with deterministic character cadence and cursor blinking.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/typewriter.tsx",
+          "type": "registry:ui",
+          "target": "@/components/remotion/typewriter.tsx"
+        }
+      ]
+    },
+    {
       "name": "spotlight-card",
       "type": "registry:ui",
       "title": "Spotlight Card",

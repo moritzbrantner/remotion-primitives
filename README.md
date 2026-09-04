@@ -35,5 +35,5 @@ Registry items are declared in `registry.json` and built with the shadcn CLI. UI
 Current groups include:
 
 - motion: Fade, Slide, Scale, Blur, Stagger, EnterExit;
-- typography and surfaces: BlurReveal, MatrixDecode, SpotlightCard, TerminalSimulator;
+- typography and surfaces: BlurReveal, MatrixDecode, AnimatedNumber, Typewriter, SpotlightCard, TerminalSimulator;
 - subtitles: SubtitleFormats, Subtitles, SubtitleFile.

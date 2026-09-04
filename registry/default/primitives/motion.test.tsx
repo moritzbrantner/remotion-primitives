@@ -10,12 +10,14 @@ vi.mock('remotion', async () => {
   };
 });
 
+import { AnimatedNumber } from './animated-number';
 import { Blur } from './blur';
 import { EnterExit } from './enter-exit';
 import { Fade } from './fade';
 import { MatrixDecode } from './matrix-decode';
 import { Scale } from './scale';
 import { Slide } from './slide';
+import { Typewriter } from './typewriter';
 
 function styleOf(element: ReturnType<typeof Fade>) {
   return element.props.style as Record<string, string | number>;
@@ -76,5 +78,36 @@ describe('frame-driven motion primitives', () => {
 
     frame.current = 60;
     expect(MatrixDecode({ text: 'done', seed: 'test' }).props.children).toBe('done');
+  });
+
+  it('formats AnimatedNumber from deterministic frame interpolation', () => {
+    frame.current = 15;
+    const number = AnimatedNumber({
+      from: 0,
+      to: 100,
+      durationInFrames: 30,
+      decimals: 1,
+      prefix: '$',
+      suffix: '%',
+    });
+    expect(number.props.children).toEqual(['$', '50.0', '%']);
+  });
+
+  it('reveals Typewriter text from the requested start frame', () => {
+    frame.current = 9;
+    expect(Typewriter({ text: 'abcd', startFrame: 10 }).props.children[0]).toBe('');
+
+    frame.current = 12;
+    expect(Typewriter({ text: 'abcd', startFrame: 10, framesPerCharacter: 2 }).props.children[0]).toBe('ab');
+
+    frame.current = 20;
+    expect(
+      Typewriter({
+        text: 'abcd',
+        startFrame: 10,
+        framesPerCharacter: 2,
+        hideCursorWhenComplete: true,
+      }).props.children[1],
+    ).toBeNull();
   });
 });

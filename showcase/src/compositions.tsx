@@ -1,5 +1,6 @@
 import { AbsoluteFill } from 'remotion';
 
+import { AnimatedNumber } from '../../registry/default/primitives/animated-number';
 import { BlurReveal } from '../../registry/default/primitives/blur-reveal';
 import { Fade } from '../../registry/default/primitives/fade';
 import { MatrixDecode } from '../../registry/default/primitives/matrix-decode';
@@ -7,6 +8,7 @@ import { Scale } from '../../registry/default/primitives/scale';
 import { Slide } from '../../registry/default/primitives/slide';
 import { Subtitles } from '../../registry/default/primitives/subtitles';
 import { TerminalSimulator } from '../../registry/default/primitives/terminal-simulator';
+import { Typewriter } from '../../registry/default/primitives/typewriter';
 
 const stage = {
   background: '#07090d',
@@ -32,19 +34,34 @@ export function MotionDemo() {
 
 export function TextDemo() {
   return (
-    <AbsoluteFill style={{ ...stage, justifyContent: 'center', padding: 96, gap: 40 }}>
+    <AbsoluteFill style={{ ...stage, justifyContent: 'center', padding: 96, gap: 34 }}>
       <BlurReveal
         text="Reusable motion, owned by the app."
         startFrame={8}
         durationInFrames={24}
-        style={{ fontSize: 48, fontWeight: 700 }}
+        style={{ fontSize: 44, fontWeight: 700 }}
       />
       <MatrixDecode
         text="deterministic by construction"
-        startFrame={38}
-        revealDurationInFrames={72}
+        startFrame={34}
+        revealDurationInFrames={70}
         seed="showcase"
-        style={{ fontSize: 30, color: '#9ca3af' }}
+        style={{ fontSize: 28, color: '#9ca3af' }}
+      />
+      <Typewriter
+        text="frame > time"
+        startFrame={52}
+        framesPerCharacter={3}
+        hideCursorWhenComplete
+        style={{ fontSize: 26, color: '#d4d4d8' }}
+      />
+      <AnimatedNumber
+        from={0}
+        to={100}
+        startFrame={72}
+        durationInFrames={42}
+        suffix="%"
+        style={{ fontSize: 34, fontWeight: 700 }}
       />
     </AbsoluteFill>
   );
