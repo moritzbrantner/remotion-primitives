@@ -32,7 +32,7 @@ The showcase is intentionally a dogfood consumer, not a second component impleme
 
 ## Registry
 
-Registry items are declared in `registry.json` and built with the shadcn CLI. UI items target `@/components/remotion/*`; pure support code targets `@/lib/remotion/*`.
+Registry items are declared in `registry.json` and built with the shadcn CLI. UI items target the portable `@components/remotion/*` placeholder; pure support code targets `@lib/remotion/*`. The CLI resolves those placeholders through the consumer's `components.json` aliases.
 
 Current groups include:
 
