@@ -29,25 +29,38 @@ const NORMALIZED_MAX_RADIUS = (Math.sqrt(3) * NORMALIZED_EXTENT) / 2;
 
 function normalizeGeometry(vertices: readonly Vec3[]): Vec3[] {
   if (vertices.length === 0) return [];
-  const mins = [...vertices[0]!] as [number, number, number];
-  const maxs = [...vertices[0]!] as [number, number, number];
-  for (const vertex of vertices.slice(1)) {
+
+  const coordinateScale = Math.max(
+    ...vertices.flatMap(([x, y, z]) => [Math.abs(x), Math.abs(y), Math.abs(z)]),
+  );
+  if (coordinateScale === 0) return vertices.map(() => [0, 0, 0]);
+
+  const scaled = vertices.map(([x, y, z]): Vec3 => [
+    x / coordinateScale,
+    y / coordinateScale,
+    z / coordinateScale,
+  ]);
+  const mins = [...scaled[0]!] as [number, number, number];
+  const maxs = [...scaled[0]!] as [number, number, number];
+  for (const vertex of scaled.slice(1)) {
     for (let axis = 0; axis < 3; axis += 1) {
       mins[axis] = Math.min(mins[axis]!, vertex[axis]!);
       maxs[axis] = Math.max(maxs[axis]!, vertex[axis]!);
     }
   }
+
   const center: Vec3 = [
     (mins[0] + maxs[0]) / 2,
     (mins[1] + maxs[1]) / 2,
     (mins[2] + maxs[2]) / 2,
   ];
-  const extent = Math.max(maxs[0] - mins[0], maxs[1] - mins[1], maxs[2] - mins[2], 1e-9);
-  const scale = NORMALIZED_EXTENT / extent;
-  return vertices.map(([x, y, z]) => [
-    (x - center[0]) * scale,
-    (y - center[1]) * scale,
-    (z - center[2]) * scale,
+  const extent = Math.max(maxs[0] - mins[0], maxs[1] - mins[1], maxs[2] - mins[2]);
+  if (extent === 0) return scaled.map(() => [0, 0, 0]);
+
+  return scaled.map(([x, y, z]) => [
+    ((x - center[0]) / extent) * NORMALIZED_EXTENT,
+    ((y - center[1]) / extent) * NORMALIZED_EXTENT,
+    ((z - center[2]) / extent) * NORMALIZED_EXTENT,
   ]);
 }
 
@@ -125,7 +138,6 @@ export function MeshScene({
           stroke="currentColor"
           strokeOpacity={strokeOpacity}
           strokeWidth={strokeWidth}
-          vectorEffect="non-scaling-stroke"
           strokeLinejoin="round"
         />
       ))}
