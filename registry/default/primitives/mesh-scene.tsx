@@ -30,9 +30,10 @@ const NORMALIZED_MAX_RADIUS = (Math.sqrt(3) * NORMALIZED_EXTENT) / 2;
 function normalizeGeometry(vertices: readonly Vec3[]): Vec3[] {
   if (vertices.length === 0) return [];
 
-  const coordinateScale = Math.max(
-    ...vertices.flatMap(([x, y, z]) => [Math.abs(x), Math.abs(y), Math.abs(z)]),
-  );
+  let coordinateScale = 0;
+  for (const [x, y, z] of vertices) {
+    coordinateScale = Math.max(coordinateScale, Math.abs(x), Math.abs(y), Math.abs(z));
+  }
   if (coordinateScale === 0) return vertices.map(() => [0, 0, 0]);
 
   const scaled = vertices.map(([x, y, z]): Vec3 => [
