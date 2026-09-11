@@ -48,4 +48,24 @@ describe('MeshScene', () => {
       indices: [0, 1, 2],
     });
   });
+
+  it('holds the initial pose until startFrame', () => {
+    frame.current = 0;
+    const initial = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    const initialPoints = initial.props.children[0].props.points;
+
+    frame.current = 19;
+    const delayed = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    expect(delayed.props.children[0].props.points).toBe(initialPoints);
+
+    frame.current = 21;
+    const advanced = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    expect(advanced.props.children[0].props.points).not.toBe(initialPoints);
+  });
+
+  it('rejects camera distances that can cross the normalized mesh radius', () => {
+    frame.current = 0;
+    expect(() => MeshScene({ mesh, cameraDistance: 1.2 })).toThrow(/cameraDistance must be greater/);
+    expect(() => MeshScene({ mesh, cameraDistance: 1.3 })).not.toThrow();
+  });
 });
