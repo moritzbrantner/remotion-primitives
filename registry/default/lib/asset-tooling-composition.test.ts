@@ -73,7 +73,10 @@ describe('asset-tooling Remotion composition operation', () => {
     const render = vi.fn(async (_request: RemotionCompositionRenderRequest) => ({
       bytes: new Uint8Array([1, 2, 3]),
       mediaType: 'video/mp4',
-      metadata: { renderer: 'fixture' },
+      metadata: {
+        renderer: 'fixture',
+        compositionId: 'renderer-must-not-replace-canonical-id',
+      },
     }));
     const storeAsset = vi.fn(async () => ({ asset: outputRef }));
     const execute = createRemotionCompositionOperationExecutor({
@@ -105,10 +108,10 @@ describe('asset-tooling Remotion composition operation', () => {
       kind: 'media',
       mediaType: 'video/mp4',
       metadata: {
+        renderer: 'fixture',
+        compositionId: 'asset-and-mesh',
         compositionFormat: REMOTION_COMPOSITION_FORMAT,
         compositionVersion: 1,
-        compositionId: 'asset-and-mesh',
-        renderer: 'fixture',
       },
     });
     expect(result.outputs.output).toEqual(outputRef);
