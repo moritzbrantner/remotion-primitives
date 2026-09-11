@@ -1,7 +1,15 @@
 import { Player } from '@remotion/player';
 import type { ComponentType } from 'react';
 
-import { MotionDemo, SubtitleDemo, TerminalDemo, TextDemo } from './compositions';
+import {
+  AssetPipelineDemo,
+  MeshPipelineDemo,
+  MotionDemo,
+  SubtitleDemo,
+  TerminalDemo,
+  TextDemo,
+  WorkflowPipelineDemo,
+} from './compositions';
 
 type Demo = {
   title: string;
@@ -11,6 +19,24 @@ type Demo = {
 };
 
 const demos: Demo[] = [
+  {
+    title: 'Asset-tooling consumer',
+    description: 'Render a materialized, content-addressed asset instead of regenerating it in Remotion.',
+    component: AssetPipelineDemo,
+    durationInFrames: 150,
+  },
+  {
+    title: '3D mesh composition',
+    description: 'Consume the renderer-neutral three-d-mesh-json-v1 envelope and add only frame-driven presentation.',
+    component: MeshPipelineDemo,
+    durationInFrames: 180,
+  },
+  {
+    title: 'Workflow composition',
+    description: 'Expose video.remotion.compose through the existing asset.operation workflow bridge.',
+    component: WorkflowPipelineDemo,
+    durationInFrames: 150,
+  },
   {
     title: 'Motion primitives',
     description: 'Fade, Slide, and Scale composed against one frame clock.',
@@ -44,8 +70,9 @@ export function App() {
         <div className="eyebrow">source-owned · deterministic · frame-oriented</div>
         <h1>Remotion primitives</h1>
         <p>
-          A dogfood catalog for the components that applications can copy, own, and customize.
-          Domain storytelling stays in the consuming repository.
+          A dogfood catalog for source-owned components and thin integration seams. Asset generation,
+          3D semantics, and workflow orchestration stay in their owning repositories; Remotion owns
+          temporal composition and presentation.
         </p>
       </header>
 
