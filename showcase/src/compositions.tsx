@@ -11,7 +11,7 @@ import { Slide } from '../../registry/default/primitives/slide';
 import { Subtitles } from '../../registry/default/primitives/subtitles';
 import { TerminalSimulator } from '../../registry/default/primitives/terminal-simulator';
 import { Typewriter } from '../../registry/default/primitives/typewriter';
-import { cubeMesh, generatedVectorAsset } from './integration-fixtures';
+import { cubeMesh, materializedVectorAsset } from './integration-fixtures';
 
 const stage = {
   background: '#07090d',
@@ -119,7 +119,7 @@ export function AssetPipelineDemo() {
     >
       <Fade startFrame={6} durationInFrames={20}>
         <div style={{ height: 330 }}>
-          <AssetImage source={generatedVectorAsset} />
+          <AssetImage source={materializedVectorAsset} />
         </div>
       </Fade>
       <div style={{ display: 'grid', gap: 24 }}>
