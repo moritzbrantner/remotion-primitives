@@ -63,6 +63,35 @@ describe('MeshScene', () => {
     expect(advanced.props.children[0].props.points).not.toBe(initialPoints);
   });
 
+  it('normalizes any nonzero finite coordinate scale into the scene', () => {
+    frame.current = 0;
+    const tiny = MeshScene({
+      mesh: {
+        schemaVersion: 1,
+        vertices: [
+          [0, 0, 0],
+          [1e-12, 0, 0],
+          [0, 1e-12, 0],
+        ],
+        indices: [0, 1, 2],
+      },
+      tiltDegrees: 0,
+    });
+    const coordinates = String(tiny.props.children[0].props.points)
+      .split(/[ ,]/)
+      .filter(Boolean)
+      .map(Number);
+    expect(Math.max(...coordinates.map(Math.abs))).toBeGreaterThan(0.5);
+  });
+
+  it('uses viewBox-scaled strokes by default', () => {
+    frame.current = 0;
+    const scene = MeshScene({ mesh });
+    const polygon = scene.props.children[0];
+    expect(polygon.props.strokeWidth).toBe(0.012);
+    expect(polygon.props.vectorEffect).toBeUndefined();
+  });
+
   it('rejects camera distances that can cross the normalized mesh radius', () => {
     frame.current = 0;
     expect(() => MeshScene({ mesh, cameraDistance: 1.2 })).toThrow(/cameraDistance must be greater/);
