@@ -234,12 +234,16 @@
       "title": "Asset Image",
       "description": "Renders a materialized content-addressed image asset while preserving asset-tooling ownership of generation and object verification.",
       "dependencies": ["remotion"],
-      "registryDependencies": ["moritzbrantner/remotion-primitives/media-contracts"],
       "files": [
         {
           "path": "primitives/asset-image.tsx",
           "type": "registry:ui",
           "target": "@components/remotion/asset-image.tsx"
+        },
+        {
+          "path": "lib/media-contracts.ts",
+          "type": "registry:lib",
+          "target": "@lib/remotion/media-contracts.ts"
         }
       ]
     },
@@ -249,12 +253,16 @@
       "title": "Mesh Scene",
       "description": "Frame-driven projection of the renderer-neutral three-d-mesh-json-v1 envelope without taking ownership of mesh semantics.",
       "dependencies": ["remotion"],
-      "registryDependencies": ["moritzbrantner/remotion-primitives/media-contracts"],
       "files": [
         {
           "path": "primitives/mesh-scene.tsx",
           "type": "registry:ui",
           "target": "@components/remotion/mesh-scene.tsx"
+        },
+        {
+          "path": "lib/media-contracts.ts",
+          "type": "registry:lib",
+          "target": "@lib/remotion/media-contracts.ts"
         }
       ]
     },
@@ -263,12 +271,16 @@
       "type": "registry:lib",
       "title": "Asset Tooling Composition",
       "description": "An asset-tooling operation descriptor and injected executor for scheduling deterministic Remotion composition through the existing asset.operation workflow bridge.",
-      "registryDependencies": ["moritzbrantner/remotion-primitives/media-contracts"],
       "files": [
         {
           "path": "lib/asset-tooling-composition.ts",
           "type": "registry:lib",
           "target": "@lib/remotion/asset-tooling-composition.ts"
+        },
+        {
+          "path": "lib/media-contracts.ts",
+          "type": "registry:lib",
+          "target": "@lib/remotion/media-contracts.ts"
         }
       ]
     }
