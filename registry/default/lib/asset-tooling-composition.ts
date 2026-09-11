@@ -1,5 +1,6 @@
 import {
   normalizeAssetToolingAssetRef,
+  normalizeJsonObject,
   normalizeRemotionCompositionSpec,
   normalizeThreeDMeshDocument,
   THREE_D_MESH_MEDIA_TYPE,
@@ -189,12 +190,10 @@ function renderResult(value: unknown): RemotionCompositionRenderResult {
   if (typeof value.mediaType !== 'string' || !/^video\/[a-z0-9!#$&^_.+-]+$/.test(value.mediaType)) {
     throw new Error('Remotion render result mediaType must be a concrete video/* media type');
   }
-  const metadata = value.metadata ?? {};
-  if (!isPlainObject(metadata)) throw new Error('Remotion render result metadata must be an object');
   return {
     bytes: value.bytes,
     mediaType: value.mediaType,
-    metadata: JSON.parse(JSON.stringify(metadata)) as JsonObject,
+    metadata: normalizeJsonObject(value.metadata ?? {}, 'Remotion render result metadata'),
   };
 }
 
