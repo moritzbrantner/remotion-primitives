@@ -7,7 +7,7 @@ import {
   type JsonObject,
   type RemotionCompositionSpec,
   type ThreeDMeshDocument,
-} from '@/lib/remotion/media-contracts';
+} from './media-contracts';
 
 export const REMOTION_COMPOSE_OPERATION_ID = 'video.remotion.compose' as const;
 export const REMOTION_COMPOSE_OPERATION_VERSION = '1' as const;
@@ -240,10 +240,10 @@ export function createRemotionCompositionOperationExecutor(
         kind: 'media',
         mediaType: rendered.mediaType,
         metadata: {
+          ...rendered.metadata,
           compositionFormat: spec.format,
           compositionVersion: spec.version,
           compositionId: spec.compositionId,
-          ...rendered.metadata,
         },
       }),
     );
