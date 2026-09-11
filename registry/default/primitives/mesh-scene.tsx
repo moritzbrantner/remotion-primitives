@@ -24,6 +24,9 @@ export type MeshSceneProps = {
 type Vec3 = readonly [number, number, number];
 type ProjectedVertex = { x: number; y: number; z: number };
 
+const NORMALIZED_EXTENT = 1.45;
+const NORMALIZED_MAX_RADIUS = (Math.sqrt(3) * NORMALIZED_EXTENT) / 2;
+
 function normalizeGeometry(vertices: readonly Vec3[]): Vec3[] {
   if (vertices.length === 0) return [];
   const mins = [...vertices[0]!] as [number, number, number];
@@ -40,7 +43,7 @@ function normalizeGeometry(vertices: readonly Vec3[]): Vec3[] {
     (mins[2] + maxs[2]) / 2,
   ];
   const extent = Math.max(maxs[0] - mins[0], maxs[1] - mins[1], maxs[2] - mins[2], 1e-9);
-  const scale = 1.45 / extent;
+  const scale = NORMALIZED_EXTENT / extent;
   return vertices.map(([x, y, z]) => [
     (x - center[0]) * scale,
     (y - center[1]) * scale,
@@ -79,13 +82,16 @@ export function MeshScene({
   if (!Number.isFinite(framesPerTurn) || framesPerTurn <= 0) {
     throw new Error('MeshScene framesPerTurn must be positive');
   }
-  if (!Number.isFinite(cameraDistance) || cameraDistance <= 1) {
-    throw new Error('MeshScene cameraDistance must be greater than 1');
+  if (!Number.isFinite(cameraDistance) || cameraDistance <= NORMALIZED_MAX_RADIUS) {
+    throw new Error(
+      `MeshScene cameraDistance must be greater than ${NORMALIZED_MAX_RADIUS.toFixed(3)}`,
+    );
   }
 
   const document = normalizeThreeDMeshDocument(mesh);
   const normalized = normalizeGeometry(document.vertices);
-  const yaw = ((frame - startFrame) / framesPerTurn) * Math.PI * 2;
+  const elapsedFrames = Math.max(0, frame - startFrame);
+  const yaw = (elapsedFrames / framesPerTurn) * Math.PI * 2;
   const pitch = (tiltDegrees / 180) * Math.PI;
   const vertices = normalized.map((vertex) => project(rotate(vertex, yaw, pitch), cameraDistance));
   const faces = [] as Array<{ index: number; depth: number; points: string }>;
