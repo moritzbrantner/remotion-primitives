@@ -1,7 +1,6 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useMemo } from 'react';
 import { useCurrentFrame } from 'remotion';
 
 import {
@@ -84,8 +83,8 @@ export function MeshScene({
     throw new Error('MeshScene cameraDistance must be greater than 1');
   }
 
-  const document = useMemo(() => normalizeThreeDMeshDocument(mesh), [mesh]);
-  const normalized = useMemo(() => normalizeGeometry(document.vertices), [document.vertices]);
+  const document = normalizeThreeDMeshDocument(mesh);
+  const normalized = normalizeGeometry(document.vertices);
   const yaw = ((frame - startFrame) / framesPerTurn) * Math.PI * 2;
   const pitch = (tiltDegrees / 180) * Math.PI;
   const vertices = normalized.map((vertex) => project(rotate(vertex, yaw, pitch), cameraDistance));
