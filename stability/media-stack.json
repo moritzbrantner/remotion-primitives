@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "assetTooling": {
+    "repository": "moritzbrantner/asset-tooling",
+    "commit": "b39e2dc24cebd338db8bccfb2188118ba6c9eac5"
+  },
+  "workflowRunner": {
+    "repository": "moritzbrantner/workflow-runner",
+    "commit": "74fee4790bdc5e0a014846ad88377790f0dc37e5"
+  }
+}
