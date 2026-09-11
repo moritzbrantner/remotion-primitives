@@ -16,8 +16,31 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.0
+      - name: Resolve pinned media stack
+        id: media-stack
+        shell: bash
+        run: |
+          echo "asset_tooling=$(bun -e \"console.log(require('./stability/media-stack.json').assetTooling.commit)\")" >> "$GITHUB_OUTPUT"
+          echo "workflow_runner=$(bun -e \"console.log(require('./stability/media-stack.json').workflowRunner.commit)\")" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: moritzbrantner/asset-tooling
+          ref: ${{ steps.media-stack.outputs.asset_tooling }}
+          path: .upstream/asset-tooling
+      - uses: actions/checkout@v4
+        with:
+          repository: moritzbrantner/workflow-runner
+          ref: ${{ steps.media-stack.outputs.workflow_runner }}
+          path: .upstream/workflow-runner
       - run: bun install
       - run: bun run verify
+      - name: Dogfood pinned media workflow stack
+        run: |
+          bun scripts/check-media-stack.ts \
+            "$GITHUB_WORKSPACE/.upstream/asset-tooling" \
+            "$GITHUB_WORKSPACE/.upstream/workflow-runner" \
+            "${{ steps.media-stack.outputs.asset_tooling }}" \
+            "${{ steps.media-stack.outputs.workflow_runner }}"
       - name: Dogfood private registry install
         env:
           GH_TOKEN: ${{ github.token }}
