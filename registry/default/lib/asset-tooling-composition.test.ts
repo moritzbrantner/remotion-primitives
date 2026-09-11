@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   createRemotionCompositionOperationExecutor,
   REMOTION_COMPOSE_OPERATION,
+  type RemotionCompositionRenderRequest,
 } from './asset-tooling-composition';
 import {
   REMOTION_COMPOSITION_FORMAT,
@@ -69,7 +70,7 @@ describe('asset-tooling Remotion composition operation', () => {
       if (asset.sha256 === imageRef.sha256) return new TextEncoder().encode('<svg />');
       throw new Error('unexpected asset');
     });
-    const render = vi.fn(async () => ({
+    const render = vi.fn(async (_request: RemotionCompositionRenderRequest) => ({
       bytes: new Uint8Array([1, 2, 3]),
       mediaType: 'video/mp4',
       metadata: { renderer: 'fixture' },
@@ -125,7 +126,10 @@ describe('asset-tooling Remotion composition operation', () => {
   });
 
   it('rejects malformed upstream mesh bytes before rendering', async () => {
-    const render = vi.fn();
+    const render = vi.fn(async (_request: RemotionCompositionRenderRequest) => ({
+      bytes: new Uint8Array([1]),
+      mediaType: 'video/mp4',
+    }));
     const execute = createRemotionCompositionOperationExecutor({
       resolveAsset: async () =>
         new TextEncoder().encode(
