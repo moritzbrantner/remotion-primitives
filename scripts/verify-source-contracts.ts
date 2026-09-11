@@ -25,6 +25,10 @@ async function sourceFiles(directory: string): Promise<string[]> {
   return nested.flat();
 }
 
+function importsOf(source: string): string[] {
+  return [...source.matchAll(/from\s+['"]([^'"]+)['"]/g)].map((match) => match[1]);
+}
+
 for (const path of await sourceFiles(registryRoot)) {
   const source = await readFile(path, 'utf8');
   for (const forbidden of forbiddenDeterminismSources) {
@@ -36,12 +40,39 @@ for (const path of await sourceFiles(registryRoot)) {
 
 const subtitleParserPath = join(registryRoot, 'lib', 'subtitle-formats.ts');
 const subtitleParser = await readFile(subtitleParserPath, 'utf8');
-const subtitleImports = [...subtitleParser.matchAll(/from\s+['"]([^'"]+)['"]/g)].map(
-  (match) => match[1],
-);
-for (const dependency of subtitleImports) {
+for (const dependency of importsOf(subtitleParser)) {
   if (dependency === 'react' || dependency === 'remotion' || dependency.startsWith('@remotion/')) {
     errors.push(`subtitle-formats must remain runtime-neutral, but imports ${dependency}`);
+  }
+}
+
+for (const file of ['media-contracts.ts', 'asset-tooling-composition.ts']) {
+  const path = join(registryRoot, 'lib', file);
+  const source = await readFile(path, 'utf8');
+  for (const dependency of importsOf(source)) {
+    if (
+      dependency === 'react' ||
+      dependency === 'remotion' ||
+      dependency.startsWith('@remotion/') ||
+      dependency.includes('asset-tooling') ||
+      dependency.includes('workflow-runner') ||
+      dependency === 'three' ||
+      dependency.startsWith('@react-three/')
+    ) {
+      errors.push(`${file} must remain a runtime-neutral integration contract, but imports ${dependency}`);
+    }
+  }
+}
+
+const meshScenePath = join(registryRoot, 'primitives', 'mesh-scene.tsx');
+for (const dependency of importsOf(await readFile(meshScenePath, 'utf8'))) {
+  if (
+    dependency === 'three' ||
+    dependency.startsWith('@react-three/') ||
+    dependency.includes('asset-tooling') ||
+    dependency.includes('workflow-runner')
+  ) {
+    errors.push(`mesh-scene must remain a thin renderer over the mesh envelope, but imports ${dependency}`);
   }
 }
 
@@ -73,4 +104,4 @@ if (errors.length > 0) {
   throw new Error(`Source contract verification failed:\n- ${errors.join('\n- ')}`);
 }
 
-console.log(`Verified determinism, subtitle ownership, and ${manifest.items.length} registry items.`);
+console.log(`Verified determinism, runtime ownership boundaries, and ${manifest.items.length} registry items.`);
