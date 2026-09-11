@@ -105,7 +105,7 @@ function assertJsonValue(value: unknown, location: string): asserts value is Jso
   throw new Error(`${location} contains a non-JSON value`);
 }
 
-function cloneJsonObject(value: unknown, location: string): JsonObject {
+export function normalizeJsonObject(value: unknown, location = 'JSON object'): JsonObject {
   const object = plainObject(value, location);
   assertJsonValue(object, location);
   return JSON.parse(JSON.stringify(object)) as JsonObject;
@@ -144,7 +144,7 @@ export function normalizeAssetToolingAssetRef(value: unknown): AssetToolingAsset
     mediaType,
     sha256,
     byteLength: asset.byteLength as number,
-    metadata: cloneJsonObject(asset.metadata ?? {}, 'asset-tooling asset ref metadata'),
+    metadata: normalizeJsonObject(asset.metadata ?? {}, 'asset-tooling asset ref metadata'),
   };
 }
 
@@ -229,6 +229,6 @@ export function normalizeRemotionCompositionSpec(value: unknown): RemotionCompos
     fps: positiveNumber(spec.fps, 'Remotion composition spec fps'),
     width: positiveInteger(spec.width, 'Remotion composition spec width'),
     height: positiveInteger(spec.height, 'Remotion composition spec height'),
-    metadata: cloneJsonObject(spec.metadata ?? {}, 'Remotion composition spec metadata'),
+    metadata: normalizeJsonObject(spec.metadata ?? {}, 'Remotion composition spec metadata'),
   };
 }
