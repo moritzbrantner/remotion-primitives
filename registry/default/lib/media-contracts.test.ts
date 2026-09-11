@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   normalizeAssetToolingAssetRef,
+  normalizeJsonObject,
   normalizeRemotionCompositionSpec,
   normalizeThreeDMeshDocument,
   REMOTION_COMPOSITION_FORMAT,
@@ -26,6 +27,11 @@ describe('media integration contracts', () => {
     expect(() =>
       normalizeAssetToolingAssetRef({ ...asset, url: 'https://example.invalid/object' }),
     ).toThrow(/unknown field 'url'/);
+  });
+
+  it('rejects metadata that JSON serialization would silently discard', () => {
+    expect(() => normalizeJsonObject({ stable: true, dropped: undefined })).toThrow(/undefined/);
+    expect(() => normalizeJsonObject({ stable: true, dropped: () => 'value' })).toThrow(/non-JSON/);
   });
 
   it('accepts the three-d-mesh-json-v1 position/index envelope', () => {
