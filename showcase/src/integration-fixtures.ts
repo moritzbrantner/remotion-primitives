@@ -3,10 +3,10 @@ import type {
   ThreeDMeshDocument,
 } from '../../registry/default/lib/media-contracts';
 
-const PROCEDURAL_SVG =
+const VECTOR_FIXTURE_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300"><rect width="480" height="300" rx="36" fill="#111827"/><circle cx="120" cy="150" r="64" fill="#60a5fa"/><circle cx="240" cy="150" r="48" fill="#34d399"/><circle cx="350" cy="150" r="36" fill="#f59e0b"/></svg>';
 
-export const generatedVectorAsset: MaterializedAsset = {
+export const materializedVectorAsset: MaterializedAsset = {
   asset: {
     schemaVersion: 1,
     kind: 'vector-image',
@@ -14,12 +14,10 @@ export const generatedVectorAsset: MaterializedAsset = {
     sha256: '0265b45ba8d1765f6b3c1e4f9916a3c9097390b3ab7d9ecbc99f37d42daa716a',
     byteLength: 270,
     metadata: {
-      source: 'asset-tooling-compatible-fixture',
-      operation: 'procedural.svg.scatter',
-      operationVersion: '1',
+      source: 'asset-tooling-contract-fixture',
     },
   },
-  src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(PROCEDURAL_SVG)}`,
+  src: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(VECTOR_FIXTURE_SVG)}`,
 };
 
 export const cubeMesh: ThreeDMeshDocument = {
