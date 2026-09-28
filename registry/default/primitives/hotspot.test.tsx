@@ -22,7 +22,7 @@ vi.mock('remotion', async () => {
   };
 });
 
-import { Hotspot, HotspotProvider, isHotspotActive } from './hotspot';
+import { Hotspot, HotspotProvider, isHotspotActive, SvgHotspot } from './hotspot';
 import { splitHotspotTerms, Subtitles } from './subtitles';
 
 const srt = `1\n00:00:00,000 --> 00:00:02,000\nFrames beat wall-clock time.`;
@@ -75,6 +75,51 @@ describe('Hotspot', () => {
       </HotspotProvider>,
     );
     expect(markup).not.toContain('<button');
+  });
+});
+
+describe('SvgHotspot', () => {
+  it('renders an inert group without a handler', () => {
+    const markup = renderToStaticMarkup(
+      <svg>
+        <SvgHotspot id="bar">
+          <rect width={4} height={4} />
+        </SvgHotspot>
+      </svg>,
+    );
+    expect(markup).toBe('<svg><g data-hotspot="bar"><rect width="4" height="4"></rect></g></svg>');
+  });
+
+  it('renders a focusable button-like group when a handler is present', () => {
+    frame.current = 0;
+    const markup = renderToStaticMarkup(
+      <HotspotProvider onActivate={() => undefined} selectedId="bar">
+        <svg>
+          <SvgHotspot id="bar" label="Bar 1">
+            <rect width={4} height={4} />
+          </SvgHotspot>
+        </svg>
+      </HotspotProvider>,
+    );
+    expect(markup).toContain(
+      '<g data-hotspot="bar" role="button" tabindex="0" aria-label="Bar 1" aria-pressed="true"',
+    );
+  });
+
+  it('activates on Enter and Space but not on other keys', () => {
+    frame.current = 7;
+    const onActivate = vi.fn();
+    context.current = { onActivate };
+    try {
+      const element = SvgHotspot({ id: 'bar', payload: 3, children: null });
+      for (const key of ['Enter', ' ', 'a']) {
+        element.props.onKeyDown({ key, preventDefault: vi.fn(), stopPropagation: vi.fn() });
+      }
+    } finally {
+      context.current = undefined;
+    }
+    expect(onActivate).toHaveBeenCalledTimes(2);
+    expect(onActivate).toHaveBeenCalledWith({ id: 'bar', payload: 3, frame: 7 });
   });
 });
 

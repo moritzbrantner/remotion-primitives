@@ -176,7 +176,7 @@
       "name": "hotspot",
       "type": "registry:ui",
       "title": "Hotspot",
-      "description": "An opt-in interactive region for Remotion Player compositions that reports clicks to the host and renders as inert content when no handler is provided.",
+      "description": "Opt-in interactive regions for Remotion Player compositions: Hotspot for HTML, SvgHotspot for SVG marks, and useHotspot for custom targets. Clicks are reported to the host; without a handler they render as inert content.",
       "dependencies": ["remotion"],
       "files": [
         {

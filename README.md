@@ -75,3 +75,11 @@ Current groups include:
 `Hotspot` turns any composition element into a click target when the video plays in `@remotion/player`. The host app passes an `onActivate` handler (typically through `inputProps` into a `HotspotProvider`), pauses the Player through its ref, and renders its own detail UI outside the video. `Subtitles` accepts `hotspots` terms that make matching words clickable.
 
 Without a handler, for example in a server-side render, hotspots render as plain inert content, so the same composition still produces a normal deterministic video. Set `clickToPlay={false}` on the Player so clicks on the video do not also toggle playback. Insight content and domain-specific widgets such as charts stay in the consuming app.
+
+Pick the element that matches where the mark lives:
+
+- `Hotspot` renders a `<button>` (inert: `<span>`) for HTML content such as text, cards, and subtitle words.
+- `SvgHotspot` renders a `<g>` for marks inside an `<svg>`, such as chart bars, points, and cells. Interactive groups get `role="button"`, are focusable, and activate on Enter and Space.
+- `useHotspot` exposes the shared behavior (frame window, handler, selection, activation, keyboard handling) for custom click targets.
+
+> **Keep hotspots out of the bottom of the frame.** With `controls` enabled, the Player lays its controls overlay across the bottom of the video. The overlay's padded gradient intercepts pointer events even while the controls are faded out, so a hotspot underneath it cannot be clicked. In practice this covers roughly the bottom 80 CSS pixels of the rendered Player, independent of the composition size. Position subtitles and chart marks above that band, or build custom controls outside the Player.
