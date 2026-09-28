@@ -167,14 +167,16 @@ try {
     consumer,
   );
 
-  for (const consumerPath of expectedCopies.values()) await assertExists(consumerPath);
-
   // GitHub registry refs are not inherited by registryDependencies. Reinstall dependency items
   // at the exact tested ref so final source fingerprinting and compilation cover one commit.
+  // Existence is asserted afterwards because a dependency added at this ref is not yet declared
+  // on the default branch that the first install resolved dependencies from.
   await run(
     ['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', ...dependencyItems.map(address)],
     consumer,
   );
+
+  for (const consumerPath of expectedCopies.values()) await assertExists(consumerPath);
 
   for (const [sourcePath, consumerPath] of expectedCopies) {
     await assertExactCopy(sourcePath, consumerPath);
