@@ -26,8 +26,12 @@ The repository supports two usage modes:
 
 - Split work into frame-independent and frame-dependent parts. Parsing, data aggregation and binning, scales, layout, path geometry, text measurement, and matcher compilation are frame-independent: derive them from props once and cache them (`useMemo` keyed on those props, or module-level constants for static data).
 - Per-frame work is limited to cheap arithmetic on precomputed data: interpolation progress, active-cue lookup, opacity, and offsets.
-- Keep the frame read as low in the tree as possible. Only components that call `useCurrentFrame()` need to re-render each frame; static subtrees such as backgrounds, chart axes, and labels live in components that do not read the frame and are memoized with `React.memo` when their parent does.
+- Keep the frame read as low in the tree as possible. Only components that call `useCurrentFrame()` need to re-render each frame; static subtrees such as backgrounds, chart axes, and labels live in components that do not read the frame and are memoized with `React.memo`.
+- Treat the composition root as re-rendering on every frame. `@remotion/player` re-renders the component passed as `component` once per frame, even when it does not read the frame itself, so every frame-independent child of the root must be memoized to stay out of the per-frame work.
+- Split frame-reading components into a thin part that reads the frame and derives the values it needs, and a memoized part that draws from those values. Once a value stops changing, such as a finished reveal, the drawing part no longer re-renders.
 - Pass stable prop identities for frame-independent inputs (hoist constant arrays and objects), so caches keyed on them stay valid.
+
+Measured in the [`interactive-videos`](https://github.com/moritzbrantner/interactive-videos) latency explainer with `react-render-budget`, stepping the Player 30 frames: the composition root rendered 30 times, the memoized axes and bar container 0 times, and after the reveal the 48 memoized bar marks 0 times, while their thin frame-reading parents rendered 48 times per frame. Without the memoized marks, all 48 redrew on every frame (1,440 renders).
 - Never carry state from one frame to the next. Independent frames are what allow seeking, pausing, and parallel server rendering.
 
 **Animate with `transform` and `opacity`.**
