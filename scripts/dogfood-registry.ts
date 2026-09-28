@@ -9,6 +9,7 @@ const repository = 'moritzbrantner/remotion-primitives';
 const consumer = await mkdtemp(join(tmpdir(), 'remotion-primitives-dogfood-'));
 
 const requestedItems = ['blur-reveal', 'subtitle-file', 'animated-number', 'typewriter'];
+// Ordered dependents first: subtitles depends on subtitle-formats and hotspot.
 const dependencyItems = ['fade', 'blur', 'subtitles', 'subtitle-formats', 'hotspot'];
 
 const expectedCopies = new Map([
@@ -169,12 +170,14 @@ try {
 
   // GitHub registry refs are not inherited by registryDependencies. Reinstall dependency items
   // at the exact tested ref so final source fingerprinting and compilation cover one commit.
+  // Each item is installed on its own, dependents before their dependencies: installing a pinned
+  // item re-resolves its own registryDependencies from the default branch, so a dependency must
+  // be written after every item that depends on it.
   // Existence is asserted afterwards because a dependency added at this ref is not yet declared
   // on the default branch that the first install resolved dependencies from.
-  await run(
-    ['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', ...dependencyItems.map(address)],
-    consumer,
-  );
+  for (const item of dependencyItems) {
+    await run(['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', address(item)], consumer);
+  }
 
   for (const consumerPath of expectedCopies.values()) await assertExists(consumerPath);
 
