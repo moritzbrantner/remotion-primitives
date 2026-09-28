@@ -15,6 +15,27 @@ The repository supports two usage modes:
 - Keep Remotion as the runtime foundation rather than wrapping it behind a second animation framework.
 - Keep frame output deterministic: no wall-clock time or ambient randomness inside registry source.
 - Keep subtitle parsing runtime-neutral; React and Remotion belong in the renderer layer.
+- Compute once, animate per frame: only time-dependent values are derived from the frame (see [Performance](#performance)).
+- Animate with `transform` and `opacity`; never animate layout (see [Performance](#performance)).
+
+## Performance
+
+"Every frame is a pure function of time" describes what a frame may depend on, not how much work it redoes. Because output depends only on the frame and props, everything that does not depend on the frame can be computed once and reused. These rules apply to all registry source and to compositions built with it, especially interactive videos played in `@remotion/player`, where frame-reading components re-render on every frame.
+
+**Compute once, animate per frame.**
+
+- Split work into frame-independent and frame-dependent parts. Parsing, data aggregation and binning, scales, layout, path geometry, text measurement, and matcher compilation are frame-independent: derive them from props once and cache them (`useMemo` keyed on those props, or module-level constants for static data).
+- Per-frame work is limited to cheap arithmetic on precomputed data: interpolation progress, active-cue lookup, opacity, and offsets.
+- Keep the frame read as low in the tree as possible. Only components that call `useCurrentFrame()` need to re-render each frame; static subtrees such as backgrounds, chart axes, and labels live in components that do not read the frame and are memoized with `React.memo` when their parent does.
+- Pass stable prop identities for frame-independent inputs (hoist constant arrays and objects), so caches keyed on them stay valid.
+- Never carry state from one frame to the next. Independent frames are what allow seeking, pausing, and parallel server rendering.
+
+**Animate with `transform` and `opacity`.**
+
+- Motion is expressed through `transform` (translate, scale, rotate) and `opacity`, which the browser composites without re-running layout.
+- Never animate layout-affecting properties such as `width`, `height`, `top`, `left`, `margin`, `padding`, `font-size`, or `line-height`. Size and position are fixed at layout time and moved or scaled with `transform`; reveals use `transform` or `clip-path`.
+- Paint-only properties (`filter`, gradient `background`) may be animated only when that property is the effect itself, as in `Blur`, `BlurReveal`, and `SpotlightCard`, and only on small areas.
+- Large mark counts, such as charts with thousands of points, are drawn from precomputed geometry, with hotspots as a few transparent hit targets on top, instead of re-creating thousands of elements per frame.
 
 ## Verification
 

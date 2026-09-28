@@ -124,6 +124,13 @@ Hotspots turn words into questions.
 00:00:06,200 --> 00:00:07,900
 Click one to pause and dig in.`;
 
+// Module-level so the compiled term matcher is built once, not on every render.
+const subtitleHotspots = [
+  { id: 'frame', term: 'frame' },
+  { id: 'pure-function', term: 'pure function' },
+  { id: 'hotspot', term: 'Hotspots' },
+];
+
 export function InteractiveDemo({ onActivate, selectedId }: InteractiveDemoProps) {
   return (
     <HotspotProvider onActivate={onActivate} selectedId={selectedId}>
@@ -150,11 +157,7 @@ export function InteractiveDemo({ onActivate, selectedId }: InteractiveDemoProps
           bottom={54}
           maxWidth="82%"
           highlightMode="none"
-          hotspots={[
-            { id: 'frame', term: 'frame' },
-            { id: 'pure-function', term: 'pure function' },
-            { id: 'hotspot', term: 'Hotspots' },
-          ]}
+          hotspots={subtitleHotspots}
         />
       </AbsoluteFill>
     </HotspotProvider>
