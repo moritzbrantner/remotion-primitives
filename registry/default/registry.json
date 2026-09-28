@@ -205,7 +205,10 @@
       "title": "Subtitles",
       "description": "A rich frame-synced subtitle renderer for Remotion Caption data or normalized SRT, VTT, ASS/SSA, LRC, SBV, and JSON tracks.",
       "dependencies": ["remotion", "@remotion/captions"],
-      "registryDependencies": ["moritzbrantner/remotion-primitives/subtitle-formats"],
+      "registryDependencies": [
+        "moritzbrantner/remotion-primitives/subtitle-formats",
+        "moritzbrantner/remotion-primitives/hotspot"
+      ],
       "files": [
         {
           "path": "primitives/subtitles.tsx",
