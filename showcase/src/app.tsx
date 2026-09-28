@@ -2,6 +2,7 @@ import { Player } from '@remotion/player';
 import type { ComponentType } from 'react';
 
 import { MotionDemo, SubtitleDemo, TerminalDemo, TextDemo } from './compositions';
+import { InteractiveCard } from './interactive';
 
 type Demo = {
   title: string;
@@ -68,6 +69,7 @@ export function App() {
             />
           </article>
         ))}
+        <InteractiveCard />
       </section>
     </main>
   );

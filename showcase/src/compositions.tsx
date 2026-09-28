@@ -3,6 +3,11 @@ import { AbsoluteFill } from 'remotion';
 import { AnimatedNumber } from '../../registry/default/primitives/animated-number';
 import { BlurReveal } from '../../registry/default/primitives/blur-reveal';
 import { Fade } from '../../registry/default/primitives/fade';
+import {
+  Hotspot,
+  HotspotProvider,
+  type HotspotActivation,
+} from '../../registry/default/primitives/hotspot';
 import { MatrixDecode } from '../../registry/default/primitives/matrix-decode';
 import { Scale } from '../../registry/default/primitives/scale';
 import { Slide } from '../../registry/default/primitives/slide';
@@ -99,5 +104,59 @@ export function SubtitleDemo() {
         maxWidth="82%"
       />
     </AbsoluteFill>
+  );
+}
+
+export type InteractiveDemoProps = {
+  onActivate?: (activation: HotspotActivation) => void;
+  selectedId?: string;
+};
+
+const interactiveSubtitles = `1
+00:00:00,300 --> 00:00:03,000
+Every frame is a pure function of time.
+
+2
+00:00:03,200 --> 00:00:06,000
+Hotspots turn words into questions.
+
+3
+00:00:06,200 --> 00:00:07,900
+Click one to pause and dig in.`;
+
+export function InteractiveDemo({ onActivate, selectedId }: InteractiveDemoProps) {
+  return (
+    <HotspotProvider onActivate={onActivate} selectedId={selectedId}>
+      <AbsoluteFill style={{ ...stage, alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+        <Fade startFrame={4} durationInFrames={18}>
+          <div style={{ fontSize: 22, color: '#9ca3af', letterSpacing: 2, textTransform: 'uppercase' }}>
+            reproducible renders
+          </div>
+        </Fade>
+        <Hotspot id="determinism" label="Why every render is identical" from={10}>
+          <AnimatedNumber
+            from={0}
+            to={100}
+            startFrame={10}
+            durationInFrames={50}
+            suffix="%"
+            style={{ fontSize: 120, fontWeight: 760, letterSpacing: -4 }}
+          />
+        </Hotspot>
+        <Subtitles
+          subtitleText={interactiveSubtitles}
+          format="srt"
+          fontSize={34}
+          bottom={54}
+          maxWidth="82%"
+          highlightMode="none"
+          hotspots={[
+            { id: 'frame', term: 'frame' },
+            { id: 'pure-function', term: 'pure function' },
+            { id: 'hotspot', term: 'Hotspots' },
+          ]}
+        />
+      </AbsoluteFill>
+    </HotspotProvider>
   );
 }
