@@ -97,38 +97,49 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/** Splits subtitle text into plain segments and whole-word, case-insensitive hotspot terms. */
-export function splitHotspotTerms(text: string, hotspots: SubtitleHotspot[] = []): SubtitleTextSegment[] {
+export type HotspotMatcher = (text: string) => SubtitleTextSegment[];
+
+/**
+ * Compiles hotspot terms once into a matcher that splits text into plain segments and
+ * whole-word, case-insensitive hotspot terms. Terms do not depend on the frame, so callers
+ * should build the matcher once per term list rather than on every frame.
+ */
+export function createHotspotMatcher(hotspots: SubtitleHotspot[] = []): HotspotMatcher | undefined {
   const candidates = hotspots
     .filter((hotspot) => hotspot.term.trim().length > 0)
     .sort((a, b) => b.term.length - a.term.length);
-  if (!candidates.length || !text) return [{ text }];
+  if (!candidates.length) return undefined;
 
+  const byTerm = new Map(candidates.map((hotspot) => [hotspot.term.toLocaleLowerCase(), hotspot]));
   const pattern = new RegExp(
     `(?<![\\p{L}\\p{N}])(${candidates.map((hotspot) => escapeRegExp(hotspot.term)).join('|')})(?![\\p{L}\\p{N}])`,
     'giu',
   );
-  const segments: SubtitleTextSegment[] = [];
-  let cursor = 0;
-  for (const match of text.matchAll(pattern)) {
-    const index = match.index ?? 0;
-    const matched = match[0];
-    const hotspot = candidates.find(
-      (candidate) => candidate.term.toLocaleLowerCase() === matched.toLocaleLowerCase(),
-    );
-    if (index > cursor) segments.push({ text: text.slice(cursor, index) });
-    segments.push({ text: matched, hotspot });
-    cursor = index + matched.length;
-  }
-  if (cursor < text.length) segments.push({ text: text.slice(cursor) });
-  return segments;
+
+  return (text) => {
+    const segments: SubtitleTextSegment[] = [];
+    let cursor = 0;
+    for (const match of text.matchAll(pattern)) {
+      const index = match.index ?? 0;
+      const matched = match[0];
+      if (index > cursor) segments.push({ text: text.slice(cursor, index) });
+      segments.push({ text: matched, hotspot: byTerm.get(matched.toLocaleLowerCase()) });
+      cursor = index + matched.length;
+    }
+    if (cursor < text.length || !segments.length) segments.push({ text: text.slice(cursor) });
+    return segments;
+  };
 }
 
-function HotspotText({ text, hotspots }: { text: string; hotspots?: SubtitleHotspot[] }) {
-  if (!hotspots?.length) return <>{text}</>;
+export function splitHotspotTerms(text: string, hotspots: SubtitleHotspot[] = []): SubtitleTextSegment[] {
+  return createHotspotMatcher(hotspots)?.(text) ?? [{ text }];
+}
+
+function HotspotText({ text, matchHotspots }: { text: string; matchHotspots?: HotspotMatcher }) {
+  if (!matchHotspots) return <>{text}</>;
   return (
     <>
-      {splitHotspotTerms(text, hotspots).map((segment, index) =>
+      {matchHotspots(text).map((segment, index) =>
         segment.hotspot ? (
           <Hotspot
             key={index}
@@ -312,7 +323,7 @@ function CaptionPages({
   style,
   tokenStyle,
   activeTokenStyle,
-  hotspots,
+  matchHotspots,
 }: Required<
   Pick<
     SubtitlesProps,
@@ -333,8 +344,9 @@ function CaptionPages({
     | 'textShadow'
   >
 > &
-  Pick<SubtitlesProps, 'className' | 'style' | 'tokenStyle' | 'activeTokenStyle' | 'hotspots'> & {
+  Pick<SubtitlesProps, 'className' | 'style' | 'tokenStyle' | 'activeTokenStyle'> & {
     captions: Caption[];
+    matchHotspots?: HotspotMatcher;
     timeMs: number;
   }) {
   const pages = useMemo(
@@ -394,7 +406,7 @@ function CaptionPages({
                 ...(highlighted ? activeTokenStyle : undefined),
               }}
             >
-              <HotspotText text={token.text} hotspots={hotspots} />
+              <HotspotText text={token.text} matchHotspots={matchHotspots} />
             </span>
           );
         })}
@@ -425,7 +437,7 @@ function RichTrack({
   cueStyle,
   tokenStyle,
   activeTokenStyle,
-  hotspots,
+  matchHotspots,
 }: Required<
   Pick<
     SubtitlesProps,
@@ -447,9 +459,10 @@ function RichTrack({
 > &
   Pick<
     SubtitlesProps,
-    'className' | 'style' | 'cueStyle' | 'tokenStyle' | 'activeTokenStyle' | 'hotspots'
+    'className' | 'style' | 'cueStyle' | 'tokenStyle' | 'activeTokenStyle'
   > & {
     track: SubtitleTrack;
+    matchHotspots?: HotspotMatcher;
     timeMs: number;
   }) {
   const { height } = useVideoConfig();
@@ -510,7 +523,7 @@ function RichTrack({
                     ...(highlighted ? activeTokenStyle : undefined),
                   }}
                 >
-                  <HotspotText text={span.text} hotspots={hotspots} />
+                  <HotspotText text={span.text} matchHotspots={matchHotspots} />
                 </span>
               );
             })}
@@ -563,6 +576,7 @@ export function Subtitles({
     [subtitleText, format, fileName, defaultCueDurationMs],
   );
   const track = suppliedTrack ?? parsedTrack;
+  const matchHotspots = useMemo(() => createHotspotMatcher(hotspots), [hotspots]);
 
   if (track) {
     return (
@@ -588,7 +602,7 @@ export function Subtitles({
         cueStyle={cueStyle}
         tokenStyle={tokenStyle}
         activeTokenStyle={activeTokenStyle}
-        hotspots={hotspots}
+        matchHotspots={matchHotspots}
       />
     );
   }
@@ -617,7 +631,7 @@ export function Subtitles({
       style={style}
       tokenStyle={tokenStyle}
       activeTokenStyle={activeTokenStyle}
-      hotspots={hotspots}
+      matchHotspots={matchHotspots}
     />
   );
 }
