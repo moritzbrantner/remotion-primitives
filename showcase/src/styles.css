@@ -94,6 +94,56 @@ h1 {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.card > div.interactive {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+}
+
+.insight {
+  padding: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.insight h3 {
+  margin: 10px 0 8px;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.insight p {
+  margin: 0 0 18px;
+  color: #a1a1aa;
+  line-height: 1.6;
+}
+
+.insight .insight-empty {
+  margin: 0;
+}
+
+.insight button {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+}
+
+.insight button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 860px) {
+  .card > div.interactive {
+    grid-template-columns: 1fr;
+  }
+
+  .insight {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .shell {
     width: min(100% - 24px, 1180px);

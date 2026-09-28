@@ -46,4 +46,11 @@ Current groups include:
 
 - motion: Fade, Slide, Scale, Blur, Stagger, EnterExit;
 - typography and surfaces: BlurReveal, MatrixDecode, AnimatedNumber, Typewriter, SpotlightCard, TerminalSimulator;
-- subtitles: SubtitleFormats, Subtitles, SubtitleFile.
+- subtitles: SubtitleFormats, Subtitles, SubtitleFile;
+- interaction: Hotspot and HotspotProvider.
+
+## Interactive videos
+
+`Hotspot` turns any composition element into a click target when the video plays in `@remotion/player`. The host app passes an `onActivate` handler (typically through `inputProps` into a `HotspotProvider`), pauses the Player through its ref, and renders its own detail UI outside the video. `Subtitles` accepts `hotspots` terms that make matching words clickable.
+
+Without a handler, for example in a server-side render, hotspots render as plain inert content, so the same composition still produces a normal deterministic video. Set `clickToPlay={false}` on the Player so clicks on the video do not also toggle playback. Insight content and domain-specific widgets such as charts stay in the consuming app.

@@ -9,7 +9,7 @@ const repository = 'moritzbrantner/remotion-primitives';
 const consumer = await mkdtemp(join(tmpdir(), 'remotion-primitives-dogfood-'));
 
 const requestedItems = ['blur-reveal', 'subtitle-file', 'animated-number', 'typewriter'];
-const dependencyItems = ['fade', 'blur', 'subtitles', 'subtitle-formats'];
+const dependencyItems = ['fade', 'blur', 'subtitles', 'subtitle-formats', 'hotspot'];
 
 const expectedCopies = new Map([
   ['registry/default/primitives/blur-reveal.tsx', 'src/components/remotion/blur-reveal.tsx'],
@@ -18,6 +18,7 @@ const expectedCopies = new Map([
   ['registry/default/primitives/subtitle-file.tsx', 'src/components/remotion/subtitle-file.tsx'],
   ['registry/default/primitives/subtitles.tsx', 'src/components/remotion/subtitles.tsx'],
   ['registry/default/lib/subtitle-formats.ts', 'src/lib/remotion/subtitle-formats.ts'],
+  ['registry/default/primitives/hotspot.tsx', 'src/components/remotion/hotspot.tsx'],
   ['registry/default/primitives/animated-number.tsx', 'src/components/remotion/animated-number.tsx'],
   ['registry/default/primitives/typewriter.tsx', 'src/components/remotion/typewriter.tsx'],
 ]);
@@ -166,14 +167,16 @@ try {
     consumer,
   );
 
-  for (const consumerPath of expectedCopies.values()) await assertExists(consumerPath);
-
   // GitHub registry refs are not inherited by registryDependencies. Reinstall dependency items
   // at the exact tested ref so final source fingerprinting and compilation cover one commit.
+  // Existence is asserted afterwards because a dependency added at this ref is not yet declared
+  // on the default branch that the first install resolved dependencies from.
   await run(
     ['bunx', 'shadcn@4.20.1', 'add', '--yes', '--overwrite', ...dependencyItems.map(address)],
     consumer,
   );
+
+  for (const consumerPath of expectedCopies.values()) await assertExists(consumerPath);
 
   for (const [sourcePath, consumerPath] of expectedCopies) {
     await assertExactCopy(sourcePath, consumerPath);

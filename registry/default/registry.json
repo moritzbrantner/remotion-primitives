@@ -173,6 +173,20 @@
       ]
     },
     {
+      "name": "hotspot",
+      "type": "registry:ui",
+      "title": "Hotspot",
+      "description": "An opt-in interactive region for Remotion Player compositions that reports clicks to the host and renders as inert content when no handler is provided.",
+      "dependencies": ["remotion"],
+      "files": [
+        {
+          "path": "primitives/hotspot.tsx",
+          "type": "registry:ui",
+          "target": "@components/remotion/hotspot.tsx"
+        }
+      ]
+    },
+    {
       "name": "subtitle-formats",
       "type": "registry:lib",
       "title": "Subtitle Formats",
