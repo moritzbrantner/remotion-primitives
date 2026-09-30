@@ -1,4 +1,5 @@
 node_modules/
 .cache/
+.upstream/
 dist/
 .DS_Store

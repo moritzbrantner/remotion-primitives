@@ -1,0 +1,100 @@
+import { describe, expect, it, vi } from 'vitest';
+
+const frame = vi.hoisted(() => ({ current: 0 }));
+
+vi.mock('remotion', async () => {
+  const actual = await vi.importActual<typeof import('remotion')>('remotion');
+  return {
+    ...actual,
+    useCurrentFrame: () => frame.current,
+  };
+});
+
+import { MeshScene } from './mesh-scene';
+
+const mesh = {
+  schemaVersion: 1 as const,
+  vertices: [
+    [-1, -1, 0] as [number, number, number],
+    [1, -1, 0] as [number, number, number],
+    [0, 1, 0] as [number, number, number],
+  ],
+  indices: [0, 1, 2],
+};
+
+describe('MeshScene', () => {
+  it('is stable for the same frame and mesh', () => {
+    frame.current = 42;
+    const first = MeshScene({ mesh });
+    const second = MeshScene({ mesh });
+    expect(first.props.children[0].props.points).toBe(second.props.children[0].props.points);
+  });
+
+  it('uses frame time to advance the presentation without changing the source mesh', () => {
+    frame.current = 0;
+    const start = MeshScene({ mesh, framesPerTurn: 120, tiltDegrees: 0 });
+    const startPoints = start.props.children[0].props.points;
+
+    frame.current = 30;
+    const quarterTurn = MeshScene({ mesh, framesPerTurn: 120, tiltDegrees: 0 });
+    expect(quarterTurn.props.children[0].props.points).not.toBe(startPoints);
+    expect(mesh).toEqual({
+      schemaVersion: 1,
+      vertices: [
+        [-1, -1, 0],
+        [1, -1, 0],
+        [0, 1, 0],
+      ],
+      indices: [0, 1, 2],
+    });
+  });
+
+  it('holds the initial pose until startFrame', () => {
+    frame.current = 0;
+    const initial = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    const initialPoints = initial.props.children[0].props.points;
+
+    frame.current = 19;
+    const delayed = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    expect(delayed.props.children[0].props.points).toBe(initialPoints);
+
+    frame.current = 21;
+    const advanced = MeshScene({ mesh, startFrame: 20, framesPerTurn: 120, tiltDegrees: 0 });
+    expect(advanced.props.children[0].props.points).not.toBe(initialPoints);
+  });
+
+  it('normalizes any nonzero finite coordinate scale into the scene', () => {
+    frame.current = 0;
+    const tiny = MeshScene({
+      mesh: {
+        schemaVersion: 1,
+        vertices: [
+          [0, 0, 0],
+          [1e-12, 0, 0],
+          [0, 1e-12, 0],
+        ],
+        indices: [0, 1, 2],
+      },
+      tiltDegrees: 0,
+    });
+    const coordinates = String(tiny.props.children[0].props.points)
+      .split(/[ ,]/)
+      .filter(Boolean)
+      .map(Number);
+    expect(Math.max(...coordinates.map(Math.abs))).toBeGreaterThan(0.5);
+  });
+
+  it('uses viewBox-scaled strokes by default', () => {
+    frame.current = 0;
+    const scene = MeshScene({ mesh });
+    const polygon = scene.props.children[0];
+    expect(polygon.props.strokeWidth).toBe(0.012);
+    expect(polygon.props.vectorEffect).toBeUndefined();
+  });
+
+  it('rejects camera distances that can cross the normalized mesh radius', () => {
+    frame.current = 0;
+    expect(() => MeshScene({ mesh, cameraDistance: 1.2 })).toThrow(/cameraDistance must be greater/);
+    expect(() => MeshScene({ mesh, cameraDistance: 1.3 })).not.toThrow();
+  });
+});

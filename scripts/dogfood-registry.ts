@@ -8,9 +8,17 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const repository = 'moritzbrantner/remotion-primitives';
 const consumer = await mkdtemp(join(tmpdir(), 'remotion-primitives-dogfood-'));
 
-const requestedItems = ['blur-reveal', 'subtitle-file', 'animated-number', 'typewriter'];
+const requestedItems = [
+  'blur-reveal',
+  'subtitle-file',
+  'animated-number',
+  'typewriter',
+  'asset-image',
+  'mesh-scene',
+  'asset-tooling-composition',
+];
 // Ordered dependents first: subtitles depends on subtitle-formats and hotspot.
-const dependencyItems = ['fade', 'blur', 'subtitles', 'subtitle-formats', 'hotspot'];
+const dependencyItems = ['fade', 'blur', 'subtitles', 'subtitle-formats', 'hotspot', 'media-contracts'];
 
 const expectedCopies = new Map([
   ['registry/default/primitives/blur-reveal.tsx', 'src/components/remotion/blur-reveal.tsx'],
@@ -22,6 +30,13 @@ const expectedCopies = new Map([
   ['registry/default/primitives/hotspot.tsx', 'src/components/remotion/hotspot.tsx'],
   ['registry/default/primitives/animated-number.tsx', 'src/components/remotion/animated-number.tsx'],
   ['registry/default/primitives/typewriter.tsx', 'src/components/remotion/typewriter.tsx'],
+  ['registry/default/lib/media-contracts.ts', 'src/lib/remotion/media-contracts.ts'],
+  ['registry/default/primitives/asset-image.tsx', 'src/components/remotion/asset-image.tsx'],
+  ['registry/default/primitives/mesh-scene.tsx', 'src/components/remotion/mesh-scene.tsx'],
+  [
+    'registry/default/lib/asset-tooling-composition.ts',
+    'src/lib/remotion/asset-tooling-composition.ts',
+  ],
 ]);
 
 function currentRef() {
@@ -201,7 +216,7 @@ try {
 
   await writeFile(
     join(consumer, 'src/smoke.tsx'),
-    `import { AbsoluteFill } from 'remotion';\n\nimport { AnimatedNumber } from '@/components/remotion/animated-number';\nimport { BlurReveal } from '@/components/remotion/blur-reveal';\nimport { Fade } from '@/components/remotion/fade';\nimport { SubtitleFile } from '@/components/remotion/subtitle-file';\nimport { Typewriter } from '@/components/remotion/typewriter';\n\nexport function RegistryConsumerSmoke() {\n  return (\n    <AbsoluteFill>\n      <Fade><BlurReveal text="dogfood" /></Fade>\n      <AnimatedNumber to={100} suffix="%" />\n      <Typewriter text="registry" />\n      <SubtitleFile src="/captions.srt" />\n    </AbsoluteFill>\n  );\n}\n`,
+    `import { AbsoluteFill } from 'remotion';\n\nimport { AnimatedNumber } from '@/components/remotion/animated-number';\nimport { AssetImage } from '@/components/remotion/asset-image';\nimport { BlurReveal } from '@/components/remotion/blur-reveal';\nimport { Fade } from '@/components/remotion/fade';\nimport { MeshScene } from '@/components/remotion/mesh-scene';\nimport { SubtitleFile } from '@/components/remotion/subtitle-file';\nimport { Typewriter } from '@/components/remotion/typewriter';\nimport { REMOTION_COMPOSE_OPERATION } from '@/lib/remotion/asset-tooling-composition';\n\nexport function RegistryConsumerSmoke() {\n  return (\n    <AbsoluteFill data-operation={REMOTION_COMPOSE_OPERATION.id}>\n      <Fade><BlurReveal text="dogfood" /></Fade>\n      <AnimatedNumber to={100} suffix="%" />\n      <Typewriter text="registry" />\n      <AssetImage source={{ asset: { schemaVersion: 1, kind: 'image', mediaType: 'image/png', sha256: 'a'.repeat(64), byteLength: 1, metadata: {} }, src: 'data:image/png;base64,' }} />\n      <MeshScene mesh={{ schemaVersion: 1, vertices: [[0, 0, 0], [1, 0, 0], [0, 1, 0]], indices: [0, 1, 2] }} />\n      <SubtitleFile src="/captions.srt" />\n    </AbsoluteFill>\n  );\n}\n`,
   );
 
   await run(['bun', 'run', 'tsc', '--noEmit', '-p', 'tsconfig.json'], consumer);
