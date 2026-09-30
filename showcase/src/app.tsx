@@ -10,6 +10,7 @@ import {
   TextDemo,
   WorkflowPipelineDemo,
 } from './compositions';
+import { InteractiveCard } from './interactive';
 
 type Demo = {
   title: string;
@@ -95,6 +96,7 @@ export function App() {
             />
           </article>
         ))}
+        <InteractiveCard />
       </section>
     </main>
   );

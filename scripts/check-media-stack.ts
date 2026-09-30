@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -28,7 +28,7 @@ for (const [value, name] of [
 }
 
 const stack = JSON.parse(
-  await Bun.file(new URL('../stability/media-stack.json', import.meta.url)).text(),
+  await readFile(new URL('../stability/media-stack.json', import.meta.url), 'utf8'),
 ) as {
   schemaVersion: number;
   assetTooling: { repository: string; commit: string };

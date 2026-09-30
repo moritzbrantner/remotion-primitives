@@ -16,6 +16,31 @@ The repository supports two usage modes:
 - Keep frame output deterministic: no wall-clock time or ambient randomness inside registry source.
 - Keep integration contracts runtime-neutral where possible; rendering belongs in renderer components or an injected render adapter.
 - Keep subtitle parsing runtime-neutral; React and Remotion belong in the renderer layer.
+- Compute once, animate per frame: only time-dependent values are derived from the frame (see [Performance](#performance)).
+- Animate with `transform` and `opacity`; never animate layout (see [Performance](#performance)).
+
+## Performance
+
+"Every frame is a pure function of time" describes what a frame may depend on, not how much work it redoes. Because output depends only on the frame and props, everything that does not depend on the frame can be computed once and reused. These rules apply to all registry source and to compositions built with it, especially interactive videos played in `@remotion/player`, where frame-reading components re-render on every frame.
+
+**Compute once, animate per frame.**
+
+- Split work into frame-independent and frame-dependent parts. Parsing, data aggregation and binning, scales, layout, path geometry, text measurement, and matcher compilation are frame-independent: derive them from props once and cache them (`useMemo` keyed on those props, or module-level constants for static data).
+- Per-frame work is limited to cheap arithmetic on precomputed data: interpolation progress, active-cue lookup, opacity, and offsets.
+- Keep the frame read as low in the tree as possible. Only components that call `useCurrentFrame()` need to re-render each frame; static subtrees such as backgrounds, chart axes, and labels live in components that do not read the frame and are memoized with `React.memo`.
+- Treat the composition root as re-rendering on every frame. `@remotion/player` re-renders the component passed as `component` once per frame, even when it does not read the frame itself, so every frame-independent child of the root must be memoized to stay out of the per-frame work.
+- Split frame-reading components into a thin part that reads the frame and derives the values it needs, and a memoized part that draws from those values. Once a value stops changing, such as a finished reveal, the drawing part no longer re-renders.
+- Pass stable prop identities for frame-independent inputs (hoist constant arrays and objects), so caches keyed on them stay valid.
+
+Measured in the [`interactive-videos`](https://github.com/moritzbrantner/interactive-videos) latency explainer with `react-render-budget`, stepping the Player 30 frames: the composition root rendered 30 times, the memoized axes and bar container 0 times, and after the reveal the 48 memoized bar marks 0 times, while their thin frame-reading parents rendered 48 times per frame. Without the memoized marks, all 48 redrew on every frame (1,440 renders).
+- Never carry state from one frame to the next. Independent frames are what allow seeking, pausing, and parallel server rendering.
+
+**Animate with `transform` and `opacity`.**
+
+- Motion is expressed through `transform` (translate, scale, rotate) and `opacity`, which the browser composites without re-running layout.
+- Never animate layout-affecting properties such as `width`, `height`, `top`, `left`, `margin`, `padding`, `font-size`, or `line-height`. Size and position are fixed at layout time and moved or scaled with `transform`; reveals use `transform` or `clip-path`.
+- Paint-only properties (`filter`, gradient `background`) may be animated only when that property is the effect itself, as in `Blur`, `BlurReveal`, and `SpotlightCard`, and only on small areas.
+- Large mark counts, such as charts with thousands of points, are drawn from precomputed geometry, with hotspots as a few transparent hit targets on top, instead of re-creating thousands of elements per frame.
 
 ## Media composition integrations
 
@@ -96,3 +121,18 @@ Current groups include:
 - typography and surfaces: BlurReveal, MatrixDecode, AnimatedNumber, Typewriter, SpotlightCard, TerminalSimulator;
 - subtitles: SubtitleFormats, Subtitles, SubtitleFile;
 - media integration: MediaContracts, AssetImage, MeshScene, AssetToolingComposition.
+- interaction: Hotspot and HotspotProvider.
+
+## Interactive videos
+
+`Hotspot` turns any composition element into a click target when the video plays in `@remotion/player`. The host app passes an `onActivate` handler (typically through `inputProps` into a `HotspotProvider`), pauses the Player through its ref, and renders its own detail UI outside the video. `Subtitles` accepts `hotspots` terms that make matching words clickable.
+
+Without a handler, for example in a server-side render, hotspots render as plain inert content, so the same composition still produces a normal deterministic video. Set `clickToPlay={false}` on the Player so clicks on the video do not also toggle playback. Insight content and domain-specific widgets such as charts stay in the consuming app.
+
+Pick the element that matches where the mark lives:
+
+- `Hotspot` renders a `<button>` (inert: `<span>`) for HTML content such as text, cards, and subtitle words.
+- `SvgHotspot` renders a `<g>` for marks inside an `<svg>`, such as chart bars, points, and cells. Interactive groups get `role="button"`, are focusable, and activate on Enter and Space.
+- `useHotspot` exposes the shared behavior (frame window, handler, selection, activation, keyboard handling) for custom click targets.
+
+> **Keep hotspots out of the bottom of the frame.** With `controls` enabled, the Player lays its controls overlay across the bottom of the video. The overlay's padded gradient intercepts pointer events even while the controls are faded out, so a hotspot underneath it cannot be clicked. In practice this covers roughly the bottom 80 CSS pixels of the rendered Player, independent of the composition size. Position subtitles and chart marks above that band, or build custom controls outside the Player.
