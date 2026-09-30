@@ -92,7 +92,12 @@ function assertJsonValue(value: unknown, location: string): asserts value is Jso
     return;
   }
   if (Array.isArray(value)) {
-    value.forEach((entry, index) => assertJsonValue(entry, `${location}[${index}]`));
+    for (let index = 0; index < value.length; index += 1) {
+      if (!Object.hasOwn(value, index)) {
+        throw new Error(`${location}[${index}] is a sparse array entry`);
+      }
+      assertJsonValue(value[index], `${location}[${index}]`);
+    }
     return;
   }
   if (isPlainObject(value)) {

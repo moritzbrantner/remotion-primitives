@@ -34,6 +34,14 @@ describe('media integration contracts', () => {
     expect(() => normalizeJsonObject({ stable: true, dropped: () => 'value' })).toThrow(/non-JSON/);
   });
 
+  it('rejects sparse metadata arrays before JSON cloning changes their contents', () => {
+    expect(() => normalizeJsonObject({ values: new Array(1) })).toThrow(/sparse/);
+    expect(() =>
+      normalizeAssetToolingAssetRef({ ...asset, metadata: { nested: { values: [, 'value'] } } }),
+    ).toThrow(/sparse/);
+    expect(normalizeJsonObject({ values: [null, 'value'] })).toEqual({ values: [null, 'value'] });
+  });
+
   it('accepts the three-d-mesh-json-v1 position/index envelope', () => {
     const mesh = normalizeThreeDMeshDocument({
       schemaVersion: 1,
