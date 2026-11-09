@@ -20,17 +20,17 @@
     "remotion": "^4.0.0"
   },
   "devDependencies": {
-    "@remotion/captions": "4.0.540",
-    "@remotion/player": "4.0.540",
+    "@remotion/captions": "4.0.541",
+    "@remotion/player": "4.0.541",
     "@types/bun": "1.4.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.2.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.540",
+    "remotion": "4.0.541",
     "typescript": "6.0.3",
-    "vite": "8.3.5",
+    "vite": "8.3.6",
     "vitest": "4.1.12"
   }
 }
