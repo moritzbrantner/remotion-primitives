@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.4.5",
   "scripts": {
     "build:registry": "bunx shadcn@4.20.1 build",
     "build:showcase": "vite build --config showcase/vite.config.ts",

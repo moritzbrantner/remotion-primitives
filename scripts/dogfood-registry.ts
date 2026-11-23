@@ -108,7 +108,6 @@ try {
           name: 'remotion-primitives-dogfood-consumer',
           private: true,
           type: 'module',
-          packageManager: 'bun@1.4.0',
           dependencies: {
             react: '19.2.8',
             'react-dom': '19.2.8',
